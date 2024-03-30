@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+  }
+
+  /* Preflight overrides */
+  img {
+    display: inline-block;
+  }
+}
