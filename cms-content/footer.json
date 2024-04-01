@@ -4,5 +4,20 @@
     "linkedin": "dsasdf",
     "instagram": "asdfasdf",
     "xTwitter": "asdfasdf"
-  }
+  },
+  "columns": [
+    {
+      "sections": [
+        {
+          "items": [
+            {
+              "text": "text",
+              "link": "link"
+            }
+          ],
+          "heading": "heading"
+        }
+      ]
+    }
+  ]
 }

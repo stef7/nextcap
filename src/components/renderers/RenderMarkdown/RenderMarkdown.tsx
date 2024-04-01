@@ -1,6 +1,6 @@
 import MarkdownToJsx from "markdown-to-jsx";
 import { RenderImage } from "../RenderImage/RenderImage";
-import { useCmsPreviewContext } from "@/contexts/preview-context";
+import { useCmsPreviewContext } from "@/contexts/cms-preview-context";
 import React from "react";
 
 export const RenderMarkdown: React.FC<{

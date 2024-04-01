@@ -4,19 +4,16 @@ type ParamsBase = Record<string, string | string[] | undefined>;
 
 export type GenerateStaticParams<
   ParentParams extends ParamsBase = {},
-  Result extends ParamsBase[] = ParamsBase[],
-> = (props: { params: ParentParams }) => Result | Promise<Result>;
+  ResultParams extends ParamsBase = ParamsBase,
+> = (props: { params: ParentParams }) => ResultParams[] | Promise<ResultParams[]>;
 
-export type PageProps<Params extends ParamsBase, SearchParams extends ParamsBase = ParamsBase> = {
+export type PageProps<Params extends ParamsBase, SearchParams extends ParamsBase = ParamsBase> = Readonly<{
   params: Params;
   searchParams: SearchParams;
-};
+}>;
 
 export type InferPagePropsFromGSP<StaticParamsFn extends GenerateStaticParams<ParamsBase> = GenerateStaticParams<{}>> =
   PageProps<Awaited<ReturnType<StaticParamsFn>>[number]>;
-
-export type InferParamsFromGSP<StaticParamsFn extends GenerateStaticParams<ParamsBase> = GenerateStaticParams<{}>> =
-  InferPagePropsFromGSP<StaticParamsFn>["params"];
 
 export type GenerateMetadata<Props extends PageProps<ParamsBase> = PageProps<{}>> = (
   props: Props,

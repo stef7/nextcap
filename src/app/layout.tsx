@@ -8,6 +8,6 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({ children }: React.PropsWithChildren) {
+export default async function RootLayout({ children }: Readonly<React.PropsWithChildren>) {
   return children;
 }

@@ -7,7 +7,7 @@ const url = typeof window === "object" ? window.location.origin : undefined;
 export const cmsConfig = {
   backend: {
     name: "github",
-    repo: `${process.env.NEXT_PUBLIC_VERCEL_GIT_REPO_OWNER}/${process.env.NEXT_PUBLIC_VERCEL_GIT_REPO_SLUG}`,
+    repo: `${process.env.NEXT_PUBLIC_CMS_GIT_REPO_OWNER}/${process.env.NEXT_PUBLIC_CMS_GIT_REPO_SLUG}`,
     branch: "main",
     ...({ use_graphql: true } as {}),
   },

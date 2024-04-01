@@ -3,28 +3,45 @@
 import React, { lazy, useEffect, useState } from "react";
 
 import { cmsConfig } from "./config";
-import { identifyPreviewStylesToRegister, registerPreviewTemplates } from "./preview";
+import { registerPreviewStyles, registerPreviewTemplates } from "./preview";
 import { registerWidgets } from "./widgets";
-import { SlugTree } from "@/utils/slugs-to-tree";
+import type { LayoutContextType } from "@/contexts/layout-context";
+
+export type CmsLoaderProps = { layoutContext: LayoutContextType };
+export type CmsComponentProps = { cmsLoaderProps: CmsLoaderProps };
 
 const cmsInit = async () => {
-  const { registerPreviewStyles } = identifyPreviewStylesToRegister();
+  const { default: CMS } = await import("decap-cms-app");
 
-  return import("decap-cms-app").then(({ default: cms }) => {
-    cms.init({ config: cmsConfig });
+  CMS.init({ config: cmsConfig });
 
-    registerPreviewStyles(cms);
+  const CmsComponent: React.FC<CmsComponentProps> = ({ cmsLoaderProps }) => {
+    registerWidgets(CMS);
 
-    registerPreviewTemplates(cms);
+    registerPreviewTemplates(CMS, cmsLoaderProps);
 
-    registerWidgets(cms);
-  });
+    registerPreviewStyles(CMS);
+
+    return null;
+  };
+
+  return { default: CmsComponent };
 };
 
-export const CmsApp = lazy(() => cmsInit().then(() => ({ default: () => null })));
+const CmsLazy = lazy(cmsInit);
 
-export const CmsLoader: React.FC<{ navTree: SlugTree }> = () => {
+export const CmsLoader: React.FC<CmsLoaderProps> = (cmsLoaderProps) => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  return mounted ? <CmsApp /> : <h1 className="text-4xl p-4 text-center">Loading CMS...</h1>;
+
+  return (
+    <>
+      {mounted ? (
+        <CmsLazy cmsLoaderProps={cmsLoaderProps} />
+      ) : (
+        <h1 className="text-3xl p-4 text-center flex flex-col justify-center min-h-[100dvh]">Loading CMS...</h1>
+      )}
+      <div id="nc-root" />
+    </>
+  );
 };

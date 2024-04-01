@@ -1,6 +1,12 @@
 import type { CmsCollection, CmsField } from "decap-cms-core";
 import { pageBuilderModulesField } from "./modules";
 
+/**
+ * Requires some type-finessing because the built-in types don't support it
+ * and we don't want to break any 'const' inference.
+ */
+const uuidField = { name: "uuid", widget: "uuid" } as { name: "uuid" } & CmsField;
+
 export const cmsCollections = [
   {
     name: "pages",
@@ -14,7 +20,6 @@ export const cmsCollections = [
     summary: `/{{dirname}} — {{title}}`,
     preview_path: "/{{dirname}}",
     meta: { path: { widget: "string", label: "Path", index_file: "index" } },
-    sortable_fields: ["title", "date", "author", "description", "path"],
     fields: [
       { name: "title", label: "Title", widget: "string" },
       { name: "thumbnail", label: "Featured Image", widget: "image", required: false },
@@ -32,7 +37,7 @@ export const cmsCollections = [
         search_fields: ["title", "uuid", "description"],
         required: false,
       },
-      { name: "uuid", widget: "uuid" } as any,
+      uuidField,
     ],
   },
   {
@@ -61,7 +66,7 @@ export const cmsCollections = [
         search_fields: ["title", "uuid", "description"],
         required: false,
       },
-      { name: "uuid", widget: "uuid" } as CmsField,
+      uuidField,
     ],
   },
   {
@@ -74,14 +79,34 @@ export const cmsCollections = [
         file: "cms-content/footer.json",
         fields: [
           {
-            name: "socials",
-            label: "Socials",
-            widget: "object",
+            name: "columns",
+            label: "Columns",
+            label_singular: "Column",
+            widget: "list",
             fields: [
-              { name: "facebook", label: "Facebook", widget: "string" },
-              { name: "linkedin", label: "LinkedIn", widget: "string" },
-              { name: "instagram", label: "Instagram", widget: "string", required: false },
-              { name: "xTwitter", label: "X (formerly Twitter)", widget: "string", required: false },
+              {
+                name: "sections",
+                label: "Sections",
+                label_singular: "Section",
+                widget: "list",
+                fields: [
+                  {
+                    name: "heading",
+                    label: "Section Heading",
+                    widget: "string",
+                    required: false,
+                  },
+                  {
+                    name: "items",
+                    label: "Items",
+                    widget: "list",
+                    fields: [
+                      { name: "text", label: "Text", widget: "string" },
+                      { name: "link", label: "Link", widget: "string", required: false },
+                    ],
+                  },
+                ],
+              },
             ],
           },
         ],
@@ -94,8 +119,23 @@ export const cmsCollections = [
           { name: "title", label: "Site Title", widget: "string" },
           { name: "logo", label: "Logo", widget: "image", required: false },
           { name: "favicon", label: "Favicon", widget: "file" },
-          { name: "colorBg", label: "Background Color", widget: "color", allowInput: true },
-          { name: "colorFg", label: "Foreground Color", widget: "color", allowInput: true },
+          {
+            name: "styleVariables",
+            label: "Style Variables",
+            widget: "object",
+            fields: [
+              { name: "colorBg", label: "Background Color", widget: "color", allowInput: true },
+              { name: "colorFg", label: "Foreground Color", widget: "color", allowInput: true },
+              { name: "colorLink", label: "Link Color", widget: "color", allowInput: true },
+              {
+                name: "colorLinkVisited",
+                label: "Visited Link Color",
+                widget: "color",
+                allowInput: true,
+                required: false,
+              },
+            ],
+          },
         ],
       },
       {

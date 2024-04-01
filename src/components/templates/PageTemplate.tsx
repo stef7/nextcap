@@ -1,11 +1,20 @@
+"use client";
+
 import type { EntryImport } from "@/cms/api";
 import { RenderModules } from "../renderers/RenderModules/RenderModules";
+import type { SlugPageProps } from "@/app/(public)/[[...slug]]/page";
 
-export const PageTemplate: React.FC<EntryImport<"pages">> = (page) => {
+type PageTemplateProps = EntryImport<"pages"> &
+  SlugPageProps & {
+    postsPageContent?: React.ReactNode;
+  };
+
+export const PageTemplate: React.FC<PageTemplateProps> = ({ MODULES, postsPageContent }) => {
   return (
     <>
-      <h1>{page.title}</h1>
-      <RenderModules modules={page.MODULES} />
+      <RenderModules modules={MODULES} />
+
+      {postsPageContent}
     </>
   );
 };

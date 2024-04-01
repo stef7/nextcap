@@ -31,23 +31,36 @@ export interface posts {
   uuid: any;
 }
 
-export interface footer_socials {
-  facebook: string;
-  linkedin: string;
-  instagram?: string;
-  xTwitter?: string;
+export interface footer_columns_sections_items {
+  text: string;
+  link?: string;
+}
+
+export interface footer_columns_sections {
+  heading?: string;
+  items: footer_columns_sections_items[];
+}
+
+export interface footer_columns {
+  sections: footer_columns_sections[];
 }
 
 export interface footer {
-  socials: footer_socials;
+  columns: footer_columns[];
+}
+
+export interface settings_styleVariables {
+  colorBg: string;
+  colorFg: string;
+  colorLink: string;
+  colorLinkVisited?: string;
 }
 
 export interface settings {
   title: string;
   logo?: string;
   favicon: string;
-  colorBg: string;
-  colorFg: string;
+  styleVariables: settings_styleVariables;
 }
 
 export interface redirectsRewrites_redirects {

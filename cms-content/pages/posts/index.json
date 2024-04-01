@@ -1,0 +1,10 @@
+{
+  "uuid": "7f56d6de-4d62-4177-94ae-970ca1a9c065",
+  "title": "Posts",
+  "MODULES": [
+    {
+      "type": "richContent",
+      "markdown": "# Posts"
+    }
+  ]
+}

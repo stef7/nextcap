@@ -2,10 +2,10 @@ import { EntryImport } from "@/cms/api";
 import settingsJson from "@cms-content/settings.json";
 
 export const getCmsVariablesRootStyle = (settings?: EntryImport<"settings">) => {
-  const { colorBg, colorFg } = { ...settingsJson, ...settings };
+  const { styleVariables } = { ...settingsJson, ...settings };
 
   return `:root {
-    --color-bg: ${colorBg};
-    --color-fg: ${colorFg};
+    ${Object.entries(styleVariables).map(([key, value]) => `--${key}: ${value};`).join(`
+    `)}
   }` as const;
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCmsPreviewContext } from "@/contexts/preview-context";
+import { useCmsPreviewContext } from "@/contexts/cms-preview-context";
 import Image, { ImageProps } from "next/image";
 import { useEffect, useState } from "react";
 
