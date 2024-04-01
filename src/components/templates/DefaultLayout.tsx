@@ -1,6 +1,6 @@
 "use client";
 
-import "@/styles/globals.css";
+import "@/styles/global.css";
 
 import { Header } from "../organisms/Header";
 import { Footer } from "../organisms/Footer";

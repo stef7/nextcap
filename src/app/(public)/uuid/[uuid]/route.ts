@@ -6,6 +6,7 @@ export async function GET(request: Request, { params }: { params: { uuid: string
       return Response.redirect(new URL(data.uri, request.url));
     })
     .catch((error) => {
+      return Response.error();
       return Response.json({ error: error?.message || error }, { status: 500 });
     });
 }

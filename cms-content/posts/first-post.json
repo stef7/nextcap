@@ -3,5 +3,6 @@
   "date": "2024-03-31T12:05:23.724Z",
   "title": "First post",
   "thumbnail": "/cms-uploads/android-chrome-512x512.png",
-  "MODULES": []
+  "MODULES": [],
+  "markdown": "![](/cms-uploads/android-chrome-512x512.png)"
 }

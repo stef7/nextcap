@@ -1,5 +1,6 @@
 import type { CmsCollection, CmsField } from "decap-cms-core";
 import { pageBuilderModulesField } from "./modules";
+import iso639 from "iso-639-1-plus";
 
 /**
  * Requires some type-finessing because the built-in types don't support it
@@ -54,7 +55,7 @@ export const cmsCollections = [
       { name: "date", label: "Date", widget: "datetime" },
       { name: "thumbnail", label: "Featured Image", widget: "image", required: false },
       { name: "description", label: "Featured Description", widget: "string", required: false },
-      pageBuilderModulesField,
+      { name: "markdown", label: "Markdown", widget: "markdown", minimal: true },
       {
         name: "relatedPosts",
         label: "Related Posts",
@@ -119,6 +120,15 @@ export const cmsCollections = [
           { name: "title", label: "Site Title", widget: "string" },
           { name: "logo", label: "Logo", widget: "image", required: false },
           { name: "favicon", label: "Favicon", widget: "file" },
+          {
+            name: "lang",
+            label: "Language",
+            widget: "select",
+            options: iso639.getLanguages(iso639.getAllCodes().sort()).map((lang) => ({
+              label: `${lang.nativeName} ${lang.nativeName === lang.name ? "" : `/ ${lang.name} `}[${lang.code}]`,
+              value: lang.code,
+            })),
+          },
           {
             name: "styleVariables",
             label: "Style Variables",

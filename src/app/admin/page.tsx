@@ -1,5 +1,3 @@
-import settings from "@cms-content/settings.json";
-import footer from "@cms-content/footer.json";
 import { getNavTree } from "@/cms/api";
 import { CmsLoader } from "@/cms/init";
 import type { Metadata } from "next";
@@ -12,9 +10,9 @@ export default async function AdminCmsPage() {
   const navTree = await getNavTree("pages");
 
   return (
-    <html lang="en" className="is-cms">
+    <html lang="en" data-cms>
       <body>
-        <CmsLoader layoutContext={{ navTree, settings, footer }} />
+        <CmsLoader navTree={navTree} />
       </body>
     </html>
   );

@@ -1,23 +1,16 @@
 import Link from "next/link";
 import { RenderImage } from "../renderers/RenderImage/RenderImage";
 import { Navigation } from "../organisms/Navigation";
-import { useLayoutContext } from "@/contexts/layout-context";
+import { useLayoutContext } from "@/contexts/LayoutContext";
 
 export const Header: React.FC = () => {
   const { settings } = useLayoutContext();
 
   return (
-    <header>
+    <header className="p-container pi-containerInline">
       <Link href="/">
         {settings.logo ? (
-          <RenderImage
-            src={settings.logo}
-            alt={settings.title ?? "Logo"}
-            title={settings.title}
-            width={400}
-            height={300}
-            priority
-          />
+          <RenderImage src={settings.logo} alt={settings.title ?? "Logo"} title={settings.title} height={160} priority />
         ) : (
           <div>{settings.title}</div>
         )}

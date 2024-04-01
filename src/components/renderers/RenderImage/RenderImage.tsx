@@ -1,6 +1,6 @@
 "use client";
 
-import { useCmsPreviewContext } from "@/contexts/cms-preview-context";
+import { useCmsPreviewContext } from "@/contexts/CmsPreviewContext";
 import Image, { ImageProps } from "next/image";
 import { useEffect, useState } from "react";
 
@@ -20,11 +20,11 @@ export const RenderImage: React.FC<RenderImageProps> = (props) => {
 
   const { width, height, fill, alt } = props;
 
-  const style = { aspectRatio: `${width} / ${height}` as const, ...props.style };
+  const style = { aspectRatio: width && height && (`${width} / ${height}` as const), ...props.style };
 
   const combinedProps = { ...props, style };
 
-  if (!src || preview || (!width && !fill)) {
+  if (!src || preview || ((!width || !height) && !fill)) {
     const { priority, ...imgProps } = combinedProps;
     // eslint-disable-next-line @next/next/no-img-element
     return <img {...imgProps} src={src} alt={alt} />;

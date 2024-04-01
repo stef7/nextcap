@@ -17,13 +17,10 @@ export const generateMetadata = (async ({ params }) => {
 }) satisfies GenerateMetadata<SlugPageProps>;
 
 export default async function SlugPage(props: SlugPageProps) {
-  const entry = await getFolderEntry("pages", props.params.slug);
+  const [entry, posts] = await Promise.all([
+    getFolderEntry("pages", props.params.slug),
+    props.params.slug?.[0] === "posts" ? getFolderEntries("posts") : undefined,
+  ]);
 
-  let postsPageContent: React.ReactNode = null;
-  if (props.params.slug?.[0] === "posts") {
-    const posts = await getFolderEntries("posts");
-    postsPageContent = <PostsList entries={posts} />;
-  }
-
-  return <PageTemplate {...props} {...entry} postsPageContent={postsPageContent} />;
+  return <PageTemplate {...entry} postsPageContent={posts && <PostsList entries={posts} />} />;
 }

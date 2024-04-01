@@ -13,13 +13,7 @@ const pageBuilderModules = [
     name: "richContent",
     label: "Rich Content",
     widget: "object",
-    fields: [
-      {
-        name: "markdown",
-        label: "Markdown",
-        widget: "markdown",
-      },
-    ],
+    fields: [{ name: "markdown", label: "Markdown", widget: "markdown", minimal: true }],
   },
 ] as const satisfies ModulesFieldConfig["types"];
 

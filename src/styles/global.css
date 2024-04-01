@@ -3,13 +3,18 @@
 @tailwind utilities;
 
 @layer base {
-  img {
-    display: inline-block; /* Preflight override */
-  }
-
   html {
     background-color: var(--colorBg);
     color: var(--colorFg);
+    --containerPadding: 5vmin;
+    --containerWidth: 65rem;
+    font-size: calc(75% + 1vmin);
+  }
+
+  :is(main, footer) {
+    a {
+      text-decoration: underline;
+    }
   }
 
   a:link {
@@ -18,12 +23,16 @@
   a:visited {
     color: var(--colorLinkVisited, var(--colorLink));
   }
+  button {
+    background-color: var(--colorFg);
+    color: var(--colorBg);
+    display: inline-block;
+    text-align: inherit;
+    padding: 0.5em;
+    border-radius: 0.3em;
+  }
 
   main {
-    a {
-      text-decoration: underline;
-    }
-
     :is(p, h1, h2, h3, h4, h5, h6, ul, ol) {
       line-height: 1.5;
       &:not(:first-child) {
@@ -36,6 +45,7 @@
 
     :is(ul, ol) {
       margin-inline-start: 1.5em;
+      list-style: unset;
     }
 
     :is(h1, h2, h3, h4, h5, h6) {
@@ -56,6 +66,12 @@
     }
     h5 {
       @apply text-lg;
+    }
+  }
+
+  .markdown-area {
+    img {
+      display: revert-layer;
     }
   }
 }

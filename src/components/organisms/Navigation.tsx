@@ -1,4 +1,4 @@
-import { useLayoutContext, LayoutContextType } from "@/contexts/layout-context";
+import { useLayoutContext, LayoutContextType } from "@/contexts/LayoutContext";
 import Link from "next/link";
 
 const NavigationChild: React.FC<LayoutContextType["navTree"]["children"][number]> = ({ uri, title, children }) => {
@@ -18,9 +18,9 @@ const NavigationChild: React.FC<LayoutContextType["navTree"]["children"][number]
 
 export const Navigation: React.FC = () => {
   const layoutContext = useLayoutContext();
-  console.debug({ layoutContext });
   return (
     <nav>
+      <input hidden type="checkbox" />
       <ul>
         {layoutContext.navTree.children.map(
           (child) => !child.hidden && <NavigationChild {...child} key={child.uuid || child.slug} />,

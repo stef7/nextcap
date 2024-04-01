@@ -1,11 +1,11 @@
-import { useLayoutContext } from "@/contexts/layout-context";
+import { useLayoutContext } from "@/contexts/LayoutContext";
 import Link from "next/link";
 
 export const Footer: React.FC = () => {
   const { footer } = useLayoutContext();
 
   return (
-    <footer>
+    <footer className="p-container pi-containerInline">
       {footer.columns?.map((col, i) => {
         return (
           <div key={JSON.stringify([col, i])}>
