@@ -2,6 +2,7 @@
   "name": "nextcap",
   "version": "0.1.0",
   "private": true,
+  "license": "UNLICENSED",
   "engines": {
     "node": ">=20"
   },
@@ -17,7 +18,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "decap-cms-app": "^3.1.4",
+    "decap-cms-app": "3.1.8",
     "glob": "^10.3.12",
     "iso-639-1-plus": "^3.0.4",
     "markdown-to-jsx": "^7.4.5",
@@ -43,6 +44,6 @@
     "prettier": "3.2.5",
     "tailwindcss": "^3.3.0",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.4.3"
+    "typescript": "5.3.3"
   }
 }
