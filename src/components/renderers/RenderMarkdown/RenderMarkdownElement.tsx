@@ -13,7 +13,7 @@ type RenderMarkdownElementProps = {
 
 export const RenderMarkdownElement: React.FC<RenderMarkdownElementProps> = ({ type, props, children, isServer }) => {
   if (type === "img") {
-    <RenderImage {...(props as JSX.IntrinsicElements["img"])} isServer={isServer} />;
+    return <RenderImage {...(props as any)} isServer={isServer} />;
   }
   return React.createElement(type, props, ...children);
 };

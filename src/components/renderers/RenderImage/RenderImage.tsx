@@ -18,6 +18,6 @@ export const RenderImage: React.FC<RenderImageProps> = (props) => (
     isServer={props.isServer}
     props={props}
     client={RenderImageOnClient}
-    server={RenderImageOnServer}
+    server={RenderImageOnServer as any}
   />
 );
