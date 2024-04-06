@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { RenderImage } from "../renderers/RenderImage/RenderImage";
 import { Navigation } from "../organisms/Navigation";
 import { useLayoutContext } from "@/contexts/LayoutContext";
+import { RenderImage } from "../renderers/RenderImage/RenderImage";
 
 export const Header: React.FC = () => {
   const { settings } = useLayoutContext();
@@ -19,6 +19,7 @@ export const Header: React.FC = () => {
             height={160}
             priority
             className="max-h-20"
+            isServer={!settings}
           />
         ) : (
           <div>{settings.title}</div>

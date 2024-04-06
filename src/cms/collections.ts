@@ -13,10 +13,18 @@ const languageFieldOptions = iso639.getLanguages(iso639.getAllCodes().sort()).ma
   value: lang.code,
 }));
 
-const timeZoneFieldOptions = Intl.supportedValuesOf("timeZone").map((tz) => ({
-  label: `${tz} ${new Intl.DateTimeFormat(undefined, { timeZoneName: "longGeneric" })}`,
-  value: tz,
-}));
+const timeZoneFieldOptions = Intl.supportedValuesOf("timeZone").map((tz) => {
+  const timeZoneGeneric = new Intl.DateTimeFormat(undefined, { timeZone: tz, timeZoneName: "longGeneric" })
+    .formatToParts()
+    .find((i) => i.type === "timeZoneName")?.value;
+  const timeZoneOffset = new Intl.DateTimeFormat(undefined, { timeZone: tz, timeZoneName: "longOffset" })
+    .formatToParts()
+    .find((i) => i.type === "timeZoneName")?.value;
+  return {
+    label: `${tz} (${timeZoneOffset}) ${timeZoneGeneric}`,
+    value: tz,
+  };
+});
 
 export const cmsCollections = [
   {

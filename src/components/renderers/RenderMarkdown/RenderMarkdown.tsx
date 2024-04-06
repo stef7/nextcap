@@ -1,19 +1,23 @@
 import MarkdownToJsx from "markdown-to-jsx";
-import { RenderImage } from "../RenderImage/RenderImage";
 import React from "react";
+import { RenderMarkdownElement } from "./RenderMarkdownElement";
 
 export const RenderMarkdown: React.FC<{
   markdown: string | undefined;
-}> = ({ markdown }) => {
+  isServer?: boolean;
+}> = ({ markdown, isServer }) => {
   if (!markdown) return null;
 
   return (
     <div data-testid="RenderMarkdown">
       <MarkdownToJsx
         options={{
-          wrapper: React.Fragment,
-          overrides: {
-            img: (props) => <RenderImage {...props} />,
+          createElement(type, { key, ...props }, ...children) {
+            return (
+              <RenderMarkdownElement type={type} props={props} key={key} isServer={isServer}>
+                {children}
+              </RenderMarkdownElement>
+            );
           },
         }}
       >

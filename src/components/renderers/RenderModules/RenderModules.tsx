@@ -1,13 +1,15 @@
 import type { ModuleName, ModulesImport } from "@/cms/modules";
 import { RichContentModule } from "@/components/modules/RichContentModule";
 
-export type ModuleComponent<N extends ModuleName> = React.FC<NonNullable<ModulesImport>[number] & { type: N }>;
+export type ModuleComponent<N extends ModuleName> = React.FC<
+  NonNullable<ModulesImport>[number] & { type: N; isServer?: boolean }
+>;
 
 const moduleMap = {
   richContent: RichContentModule,
 } as const satisfies { [K in ModuleName]: ModuleComponent<K> };
 
-export const RenderModules: React.FC<{ modules: ModulesImport }> = ({ modules }) =>
+export const RenderModules: React.FC<{ modules: ModulesImport; isServer?: boolean }> = ({ modules, isServer }) =>
   modules?.map((props, index) => {
     const { type } = props;
     const key = `${type} (${index + 1}/${modules.length})`;
@@ -16,7 +18,7 @@ export const RenderModules: React.FC<{ modules: ModulesImport }> = ({ modules })
       const MappedModule = moduleMap[type] as ModuleComponent<typeof type>;
       return (
         <div data-testid="RenderModules" data-module-key={key} key={key}>
-          <MappedModule {...props} type={type} />
+          <MappedModule {...props} type={type} isServer={isServer} />
         </div>
       );
     }

@@ -22,5 +22,11 @@ export default async function SlugPage(props: SlugPageProps) {
     props.params.slug?.[0] === "posts" ? getFolderEntries("posts") : undefined,
   ]);
 
-  return <PageTemplate {...entry} postsPageContent={posts && <PostsList entries={posts} />} />;
+  return (
+    <PageTemplate
+      {...entry}
+      postsPageContent={posts && <PostsList entries={posts} isServer={true} />}
+      isServer={true}
+    />
+  );
 }

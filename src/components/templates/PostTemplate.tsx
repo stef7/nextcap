@@ -4,13 +4,15 @@ import { LocaleContextProvider } from "@/contexts/LocaleContext";
 import { DateTime } from "../atoms/DateTime";
 import { getLangAttributes } from "@/utils/locale";
 
-export const PostTemplate: React.FC<EntryImport<"posts">> = (entry) => {
+export const PostTemplate: React.FC<EntryImport<"posts"> & { isServer?: boolean }> = ({ isServer, ...entry }) => {
   return (
     <LocaleContextProvider language={entry.lang} timeZone={entry.timeZone}>
       <div className="p-container pi-containerInline" {...getLangAttributes(entry.lang)}>
         <h1>{entry.title}</h1>
+
         <DateTime dateTime={entry.date} />
-        <RenderMarkdown markdown={entry.markdown} />
+
+        <RenderMarkdown markdown={entry.markdown} isServer={isServer} />
       </div>
     </LocaleContextProvider>
   );

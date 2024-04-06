@@ -5,6 +5,7 @@ import { getCmsVariablesRootStyle } from "@/styles/cms-variables";
 import { DefaultLayout } from "@/components/templates/DefaultLayout";
 import { LayoutContextProvider } from "@/contexts/LayoutContextProvider";
 import { defaultLocale, getLangDirection } from "@/utils/locale";
+import { ProgressBar } from "@/components/atoms/ProgressBar";
 
 export default async function PublicRootLayout({ children }: Readonly<React.PropsWithChildren>) {
   const navTree = await getNavTree("pages");
@@ -16,6 +17,7 @@ export default async function PublicRootLayout({ children }: Readonly<React.Prop
         <style>{getCmsVariablesRootStyle()}</style>
       </head>
       <body>
+        <ProgressBar />
         <LayoutContextProvider
           value={{
             navTree,

@@ -1,34 +1,23 @@
-"use client";
+import { ImageProps } from "next/image";
+import { ClientServerLeaf } from "../ClientServerLeaf/ClientServerLeaf";
+import { RenderImageOnClient } from "./RenderImageOnClient";
+import { RenderImageOnServer } from "./RenderImageOnServer";
 
-import { useCmsPreviewContext } from "@/contexts/CmsPreviewContext";
-import Image, { ImageProps } from "next/image";
-import { useEffect, useState } from "react";
+type OptionalKeys = "width" | "height";
+export type RenderImageProps = Omit<ImageProps, "src" | "alt" | "width" | "height"> &
+  Partial<Pick<ImageProps, OptionalKeys>> & {
+    src: string | undefined;
+    alt: string | undefined;
+    width?: string | number;
+    height?: string | number;
+    isServer: boolean | undefined;
+  };
 
-type RenderImageProps = Omit<ImageProps, "src" | "alt"> & {
-  src: string | undefined;
-  alt: string | undefined;
-};
-
-export const RenderImage: React.FC<RenderImageProps> = (props) => {
-  const preview = useCmsPreviewContext();
-
-  const [src, setSrc] = useState(props.src);
-  useEffect(() => {
-    if (!preview || !props.src) return;
-    setSrc(preview.getAsset(props.src).url);
-  }, [preview, props.src]);
-
-  const { width, height, fill, alt } = props;
-
-  const style = { aspectRatio: width && height && (`${width} / ${height}` as const), ...props.style };
-
-  const combinedProps = { ...props, style };
-
-  if (!src || preview || ((!width || !height) && !fill)) {
-    const { priority, ...imgProps } = combinedProps;
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img {...imgProps} src={src} alt={alt} />;
-  }
-
-  return <Image {...combinedProps} src={src} alt={alt ?? ""} />;
-};
+export const RenderImage: React.FC<RenderImageProps> = (props) => (
+  <ClientServerLeaf<RenderImageProps>
+    isServer={props.isServer}
+    props={props}
+    client={RenderImageOnClient}
+    server={RenderImageOnServer}
+  />
+);

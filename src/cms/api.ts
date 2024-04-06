@@ -1,3 +1,5 @@
+import "server-only";
+
 import { globSync } from "glob";
 
 import { cmsCollections } from "./collections";
