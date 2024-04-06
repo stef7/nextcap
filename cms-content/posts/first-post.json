@@ -4,5 +4,7 @@
   "title": "First post",
   "thumbnail": "/cms-uploads/android-chrome-512x512.png",
   "MODULES": [],
-  "markdown": "![](/cms-uploads/android-chrome-512x512.png)"
+  "markdown": "![](/cms-uploads/android-chrome-512x512.png)",
+  "lang": "es",
+  "timeZone": "Europe/Madrid"
 }

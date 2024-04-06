@@ -4,14 +4,15 @@ import { EntryImport, getNavTree } from "@/cms/api";
 import { getCmsVariablesRootStyle } from "@/styles/cms-variables";
 import { DefaultLayout } from "@/components/templates/DefaultLayout";
 import { LayoutContextProvider } from "@/contexts/LayoutContextProvider";
+import { defaultLocale } from "@/utils/locale";
 
 export default async function PublicRootLayout({ children }: Readonly<React.PropsWithChildren>) {
   const navTree = await getNavTree("pages");
 
   return (
-    <html lang={settings.lang || "en"} dir="auto">
+    <html lang={defaultLocale.language} dir="auto">
       <head>
-        <link rel="icon" href={settings.favicon} sizes="any" />
+        {"favicon" in settings && <link rel="icon" href={settings.favicon} sizes="any" />}
         <style>{getCmsVariablesRootStyle()}</style>
       </head>
       <body>

@@ -1,12 +1,23 @@
 import type { CmsCollection, CmsField } from "decap-cms-core";
 import { pageBuilderModulesField } from "./modules";
 import iso639 from "iso-639-1-plus";
+import timezones from "timezones-list";
 
 /**
  * Requires some type-finessing because the built-in types don't support it
  * and we don't want to break any 'const' inference.
  */
 const uuidField = { name: "uuid", widget: "uuid" } as { name: "uuid" } & CmsField;
+
+const languageFieldOptions = iso639.getLanguages(iso639.getAllCodes().sort()).map((lang) => ({
+  label: `${lang.nativeName} ${lang.nativeName === lang.name ? "" : `/ ${lang.name} `}[${lang.code}]`,
+  value: lang.code,
+}));
+
+const timeZoneFieldOptions = timezones.map((tz) => ({
+  label: `${tz.tzCode} ${tz.name}`,
+  value: tz.tzCode,
+}));
 
 export const cmsCollections = [
   {
@@ -53,6 +64,8 @@ export const cmsCollections = [
     fields: [
       { name: "title", label: "Title", widget: "string" },
       { name: "date", label: "Date", widget: "datetime" },
+      { name: "lang", label: "Language", widget: "select", options: languageFieldOptions, required: false },
+      { name: "timeZone", label: "Time Zone", widget: "select", options: timeZoneFieldOptions, required: false },
       { name: "thumbnail", label: "Featured Image", widget: "image", required: false },
       { name: "description", label: "Featured Description", widget: "string", required: false },
       { name: "markdown", label: "Markdown", widget: "markdown", minimal: true },
@@ -120,15 +133,8 @@ export const cmsCollections = [
           { name: "title", label: "Site Title", widget: "string" },
           { name: "logo", label: "Logo", widget: "image", required: false },
           { name: "favicon", label: "Favicon", widget: "file" },
-          {
-            name: "lang",
-            label: "Language",
-            widget: "select",
-            options: iso639.getLanguages(iso639.getAllCodes().sort()).map((lang) => ({
-              label: `${lang.nativeName} ${lang.nativeName === lang.name ? "" : `/ ${lang.name} `}[${lang.code}]`,
-              value: lang.code,
-            })),
-          },
+          { name: "lang", label: "Language", widget: "select", options: languageFieldOptions },
+          { name: "timeZone", label: "Time Zone", widget: "select", options: timeZoneFieldOptions },
           {
             name: "styleVariables",
             label: "Style Variables",
