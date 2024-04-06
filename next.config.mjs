@@ -25,7 +25,7 @@ if (!gitOwnerSlug.every(Boolean)) {
 }
 
 /** @type {import('next').NextConfig} */
-let nextConfig = {
+const nextConfig = {
   env: {
     NEXT_PUBLIC_CMS_GIT_REPO_OWNER: gitOwnerSlug[0],
     NEXT_PUBLIC_CMS_GIT_REPO_SLUG: gitOwnerSlug[1],
@@ -64,6 +64,10 @@ let nextConfig = {
   },
 };
 
-nextConfig = withPlaiceholder(nextConfig);
+const nextConfigWith = [
+  {
+    fn: withPlaiceholder,
+  },
+].reduce((result, { fn }) => fn(result), nextConfig);
 
-export default nextConfig;
+export default nextConfigWith;
