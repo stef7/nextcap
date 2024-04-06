@@ -7,9 +7,9 @@ const config: Config = {
   content: ["./src/{app,pages,components,cms}/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
-      padding: {
-        container: "var(--containerPadding)",
-        containerInline: "max(var(--containerPadding), calc(50% - (var(--containerWidth) / 2)))",
+      spacing: {
+        container: "var(--containerSpacing)",
+        containerInline: "max(var(--containerSpacing), calc(50% - (var(--containerWidth) / 2)))",
       },
     },
   },

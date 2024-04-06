@@ -16,6 +16,7 @@ const templateMap = {
   settings: undefined,
   footer: undefined,
   redirectsRewrites: undefined,
+  styling: undefined,
 } as const satisfies { [K in GeneratedN]: React.FC<EntryImport<K>> | undefined };
 
 export const registerPreviewTemplates = (CMS: CMS, cmsLoaderProps: CmsLoaderProps) => {

@@ -3,13 +3,14 @@ import Link from "next/link";
 import { RenderImage } from "../renderers/RenderImage/RenderImage";
 import { LocaleContextProvider } from "@/contexts/LocaleContext";
 import { DateTime } from "../atoms/DateTime";
+import { getLangAttributes } from "@/utils/locale";
 
 type Entries = Awaited<ReturnType<typeof getFolderEntries<"posts">>>;
 
 const PostsListItem: React.FC<Entries[number]> = ({ uri, entry }) => {
   return (
     <LocaleContextProvider language={entry.lang} timeZone={entry.timeZone}>
-      <li lang={entry.lang}>
+      <li {...getLangAttributes(entry.lang)}>
         <Link href={uri}>
           <RenderImage alt={entry.title} src={entry.thumbnail} width={40} height={40} />
           <h3>{entry.title}</h3>

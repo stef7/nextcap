@@ -1,7 +1,6 @@
 import type { CmsCollection, CmsField } from "decap-cms-core";
 import { pageBuilderModulesField } from "./modules";
 import iso639 from "iso-639-1-plus";
-import timezones from "timezones-list";
 
 /**
  * Requires some type-finessing because the built-in types don't support it
@@ -14,9 +13,9 @@ const languageFieldOptions = iso639.getLanguages(iso639.getAllCodes().sort()).ma
   value: lang.code,
 }));
 
-const timeZoneFieldOptions = timezones.map((tz) => ({
-  label: `${tz.tzCode} ${tz.name}`,
-  value: tz.tzCode,
+const timeZoneFieldOptions = Intl.supportedValuesOf("timeZone").map((tz) => ({
+  label: `${tz} ${new Intl.DateTimeFormat(undefined, { timeZoneName: "longGeneric" })}`,
+  value: tz,
 }));
 
 export const cmsCollections = [
@@ -130,27 +129,27 @@ export const cmsCollections = [
         label: "Settings",
         file: "cms-content/settings.json",
         fields: [
-          { name: "title", label: "Site Title", widget: "string" },
-          { name: "logo", label: "Logo", widget: "image", required: false },
-          { name: "favicon", label: "Favicon", widget: "file" },
           { name: "lang", label: "Language", widget: "select", options: languageFieldOptions },
           { name: "timeZone", label: "Time Zone", widget: "select", options: timeZoneFieldOptions },
+          { name: "title", label: "Site Title", widget: "string" },
+          { name: "logo", label: "Logo", widget: "image", required: false },
+          { name: "favicon", label: "Favicon", widget: "file", required: false },
+        ],
+      },
+      {
+        name: "styling",
+        label: "Styling",
+        file: "cms-content/styling.json",
+        fields: [
+          { name: "colorBg", label: "Background Color", widget: "color", allowInput: true },
+          { name: "colorFg", label: "Foreground Color", widget: "color", allowInput: true },
+          { name: "colorLink", label: "Link Color", widget: "color", allowInput: true },
           {
-            name: "styleVariables",
-            label: "Style Variables",
-            widget: "object",
-            fields: [
-              { name: "colorBg", label: "Background Color", widget: "color", allowInput: true },
-              { name: "colorFg", label: "Foreground Color", widget: "color", allowInput: true },
-              { name: "colorLink", label: "Link Color", widget: "color", allowInput: true },
-              {
-                name: "colorLinkVisited",
-                label: "Visited Link Color",
-                widget: "color",
-                allowInput: true,
-                required: false,
-              },
-            ],
+            name: "colorLinkVisited",
+            label: "Visited Link Color",
+            widget: "color",
+            allowInput: true,
+            required: false,
           },
         ],
       },

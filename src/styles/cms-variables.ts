@@ -1,24 +1,22 @@
 import { EntryImport } from "@/cms/api";
-import { settings_styleVariables } from "@/cms/types/generated-types";
-import settingsJson from "@cms-content/settings.json";
+import { entries } from "@/utils/typed-methods";
+import stylingJson from "@cms-content/styling.json";
+import { useMemo } from "react";
 
-const objectToCmsVariablesRootStyle = (styleVariables: settings_styleVariables) =>
+const customProperty = <K extends string, V extends string | undefined>([key, value]: [K, V]) =>
+  `--${key}: ${value ?? ""};` as const;
+
+const rootStyle = (styles: EntryImport<"styling">) =>
   `:root {
-  ${Object.entries(styleVariables).map(([key, value]) => `--${key}: ${value};`).join(`
+  ${entries(styles).map(customProperty).join(`
   `)}
 }` as const;
 
-export const getCmsVariablesRootStyle = (settings?: EntryImport<"settings">) => {
-  const styleVariables = { ...settingsJson?.styleVariables, ...settings?.styleVariables };
-
-  return objectToCmsVariablesRootStyle(styleVariables);
+export const getCmsVariablesRootStyle = (styles?: EntryImport<"styling">) => {
+  const styleVariables = { ...stylingJson, ...styles };
+  return rootStyle(styleVariables);
 };
 
-export const useCmsVariablesRootStyle = (settings?: EntryImport<"settings">) => {
-  const { styleVariables } = { ...settingsJson, ...settings };
-
-  return `:root {
-    ${Object.entries(styleVariables).map(([key, value]) => `--${key}: ${value};`).join(`
-    `)}
-  }` as const;
+export const useCmsVariablesRootStyle = (styles?: EntryImport<"styling">) => {
+  return useMemo(() => getCmsVariablesRootStyle(styles), [styles]);
 };

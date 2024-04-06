@@ -6,7 +6,7 @@
   html {
     background-color: var(--colorBg);
     color: var(--colorFg);
-    --containerPadding: 5vmin;
+    --containerSpacing: 5vmin;
     --containerWidth: 65rem;
     font-size: calc(75% + 1vmin);
   }

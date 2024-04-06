@@ -2,12 +2,6 @@
   "title": "Site Title",
   "logo": "/cms-uploads/android-chrome-512x512.png",
   "favicon": "/cms-uploads/android-chrome-512x512.png",
-  "styleVariables": {
-    "colorBg": "#f4eeeb",
-    "colorFg": "#2e2c28",
-    "colorLink": "#1342d1",
-    "colorLinkVisited": "#5f18b8"
-  },
   "lang": "en-AU",
   "timeZone": "Australia/Melbourne"
 }
