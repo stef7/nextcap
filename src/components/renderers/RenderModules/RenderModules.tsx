@@ -1,5 +1,3 @@
-"use client";
-
 import type { ModuleName, ModulesImport } from "@/cms/modules";
 import { RichContentModule } from "@/components/modules/RichContentModule";
 

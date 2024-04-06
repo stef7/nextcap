@@ -1,3 +1,5 @@
+"use client";
+
 import { useLayoutContext, LayoutContextType } from "@/contexts/LayoutContext";
 import Link from "next/link";
 
@@ -23,7 +25,7 @@ export const Navigation: React.FC = () => {
       <input hidden type="checkbox" />
       <ul>
         {layoutContext.navTree.children.map(
-          (child) => !child.hidden && <NavigationChild {...child} key={child.uuid || child.slug} />,
+          (child) => !child.hidden && <NavigationChild {...child} key={child.uuid || child.uri} />,
         )}
       </ul>
     </nav>

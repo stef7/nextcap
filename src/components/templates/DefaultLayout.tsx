@@ -1,5 +1,3 @@
-"use client";
-
 import "@/styles/global.css";
 
 import { Header } from "../organisms/Header";

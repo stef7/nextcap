@@ -10,8 +10,8 @@ type Entries = Awaited<ReturnType<typeof getFolderEntries<"posts">>>;
 const PostsListItem: React.FC<Entries[number]> = ({ uri, entry }) => {
   return (
     <LocaleContextProvider language={entry.lang} timeZone={entry.timeZone}>
-      <li {...getLangAttributes(entry.lang)}>
-        <Link href={uri}>
+      <li className="contents">
+        <Link href={uri} {...getLangAttributes(entry.lang)}>
           <RenderImage alt={entry.title} src={entry.thumbnail} width={40} height={40} />
           <h3>{entry.title}</h3>
           <DateTime dateTime={entry.date} />

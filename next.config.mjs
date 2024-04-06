@@ -1,5 +1,7 @@
+// @ts-check
 import { execSync } from "child_process";
 import { readFileSync } from "fs";
+import withPlaiceholder from "@plaiceholder/next";
 
 /**
  * Importing via readFileSync due to warning:
@@ -15,7 +17,7 @@ const settings = JSON.parse(readFileSync("./cms-content/settings.json", "utf8"))
  */
 const redirectsRewrites = JSON.parse(readFileSync("./cms-content/redirects-rewrites.json", "utf8"));
 
-let gitOwnerSlug = [process.env.NEXT_PUBLIC_VERCEL_GIT_REPO_OWNER, process.env.NEXT_PUBLIC_VERCEL_GIT_REPO_SLUG];
+let gitOwnerSlug = [process.env.VERCEL_GIT_REPO_OWNER, process.env.VERCEL_GIT_REPO_SLUG];
 if (!gitOwnerSlug.every(Boolean)) {
   const gitOrigin = execSync(`git config --get remote.origin.url`, { encoding: "utf8" });
   const match = gitOrigin.match(/(?:@|\/\/)[^/]+[:/]([^/]+)\/([^/]+).git/)?.slice(1);
@@ -23,7 +25,7 @@ if (!gitOwnerSlug.every(Boolean)) {
 }
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+let nextConfig = {
   env: {
     NEXT_PUBLIC_CMS_GIT_REPO_OWNER: gitOwnerSlug[0],
     NEXT_PUBLIC_CMS_GIT_REPO_SLUG: gitOwnerSlug[1],
@@ -31,7 +33,14 @@ const nextConfig = {
 
   rewrites: async () => {
     return {
-      beforeFiles: [...(redirectsRewrites.rewrites || [])],
+      beforeFiles: [
+        ...(("rewrites" in redirectsRewrites &&
+          Array.isArray(redirectsRewrites.rewrites) &&
+          redirectsRewrites.rewrites) ||
+          []),
+      ],
+      afterFiles: [],
+      fallback: [],
     };
   },
 
@@ -47,17 +56,14 @@ const nextConfig = {
           ]
         : []),
 
-      ...(redirectsRewrites.redirects?.flatMap((redirect) => {
-        if (!redirect.source?.startsWith("/") || !redirect.destination?.startsWith("/")) return [];
-        return [
-          {
-            ...redirect,
-            permanent: false,
-          },
-        ];
+      ...(redirectsRewrites.redirects?.flatMap(({ source, destination }) => {
+        if (!source?.startsWith("/") || !destination?.startsWith("/")) return [];
+        return [{ source, destination, permanent: false }];
       }) ?? []),
     ];
   },
 };
+
+nextConfig = withPlaiceholder(nextConfig);
 
 export default nextConfig;

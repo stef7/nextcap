@@ -1,3 +1,5 @@
+"use client";
+
 import { useLayoutContext } from "@/contexts/LayoutContext";
 import Link from "next/link";
 

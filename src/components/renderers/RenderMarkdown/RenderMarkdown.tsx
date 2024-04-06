@@ -1,5 +1,3 @@
-"use client";
-
 import MarkdownToJsx from "markdown-to-jsx";
 import { RenderImage } from "../RenderImage/RenderImage";
 import React from "react";
@@ -15,7 +13,7 @@ export const RenderMarkdown: React.FC<{
         options={{
           wrapper: React.Fragment,
           overrides: {
-            img: RenderImage,
+            img: (props) => <RenderImage {...props} />,
           },
         }}
       >

@@ -1,5 +1,3 @@
-"use client";
-
 import type { EntryImport } from "@/cms/api";
 import { RenderModules } from "../renderers/RenderModules/RenderModules";
 
