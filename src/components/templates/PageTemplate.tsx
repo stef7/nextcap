@@ -5,13 +5,12 @@ import { RenderModules } from "../renderers/RenderModules/RenderModules";
 
 type PageTemplateProps = EntryImport<"pages"> & {
   postsPageContent?: React.ReactNode;
-  isServer?: boolean;
 };
 
-export const PageTemplate: React.FC<PageTemplateProps> = ({ MODULES, postsPageContent, isServer }) => {
+export const PageTemplate: React.FC<PageTemplateProps> = ({ MODULES, postsPageContent }) => {
   return (
     <>
-      <RenderModules modules={MODULES} isServer={isServer} />
+      <RenderModules modules={MODULES} />
 
       {postsPageContent}
     </>

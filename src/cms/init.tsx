@@ -5,9 +5,9 @@ import React, { lazy, useEffect, useState } from "react";
 import { cmsConfig } from "./config";
 import { registerPreviewStyles, registerPreviewTemplates } from "./preview";
 import { registerWidgets } from "./widgets";
-import type { LayoutContextType } from "@/contexts/LayoutContext";
+import { NavTree } from "./api";
 
-export type CmsLoaderProps = Pick<LayoutContextType, "navTree">;
+export type CmsLoaderProps = { navTree: NavTree };
 
 const cmsInit = async () => {
   const { default: CMS } = await import("decap-cms-app");

@@ -22,9 +22,9 @@ export default async function PostPage({ params }: InferPagePropsFromGSP<typeof 
 
   return (
     <>
-      <PostTemplate {...post} isServer={true} />
+      <PostTemplate {...post} />
 
-      <PostsList entries={posts} isServer={true} />
+      <PostsList entries={posts} />
     </>
   );
 }

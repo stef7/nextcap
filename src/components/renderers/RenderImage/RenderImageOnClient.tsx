@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { RenderImageProps } from "./RenderImage";
 
-export const RenderImageOnClient: React.FC<RenderImageProps> = ({ children, ...props }) => {
+export const RenderImageOnClient: React.FC<RenderImageProps> = (props) => {
   const preview = useCmsPreviewContext();
 
   const [src, setSrc] = useState(props.src);
@@ -14,7 +14,7 @@ export const RenderImageOnClient: React.FC<RenderImageProps> = ({ children, ...p
     setSrc(preview.getAsset(props.src).url);
   }, [preview, props.src]);
 
-  if (children) return children;
+  if (props.children) return props.children;
 
   const { width, height, fill, alt } = props;
 

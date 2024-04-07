@@ -2,10 +2,7 @@ import MarkdownToJsx from "markdown-to-jsx";
 import React from "react";
 import { RenderMarkdownElement } from "./RenderMarkdownElement";
 
-export const RenderMarkdown: React.FC<{
-  markdown: string | undefined;
-  isServer?: boolean;
-}> = ({ markdown, isServer }) => {
+export const RenderMarkdown: React.FC<{ markdown: string | undefined }> = ({ markdown }) => {
   if (!markdown) return null;
 
   return (
@@ -14,7 +11,7 @@ export const RenderMarkdown: React.FC<{
         options={{
           createElement(type, { key, ...props }, ...children) {
             return (
-              <RenderMarkdownElement type={type} props={props} key={key} isServer={isServer}>
+              <RenderMarkdownElement type={type} props={props} key={key}>
                 {children}
               </RenderMarkdownElement>
             );

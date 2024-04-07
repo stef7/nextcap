@@ -33,7 +33,7 @@ type ObjectFromEntries<Ents extends AnyEntries> = {
 export const fromEntries = <const Entries extends AnyEntries>(entries: Entries) =>
   Object.fromEntries(entries) as ObjectFromEntries<Entries>;
 
-interface TypedReadonlyMap<Obj extends AnyObj> extends ReadonlyMap<keyof Obj, Obj[keyof Obj]> {
+export interface TypedReadonlyMap<Obj extends AnyObj> extends ReadonlyMap<keyof Obj, Obj[keyof Obj]> {
   get<K extends MaybeKeyOf<Obj>>(
     key: K,
   ): keyof Obj extends K ? Obj[keyof Obj] | undefined : K extends keyof Obj ? Obj[K] : undefined;

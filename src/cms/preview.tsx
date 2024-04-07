@@ -1,20 +1,18 @@
 import type { CMS } from "decap-cms-core";
 import type { GeneratedN, EntryImport } from "./api";
-import settings from "@cms-content/settings.json";
-import footer from "@cms-content/footer.json";
 import { PostTemplate } from "@/components/templates/PostTemplate";
 import { PageTemplate } from "@/components/templates/PageTemplate";
 import { DefaultLayout } from "@/components/templates/DefaultLayout";
 import { getCmsVariablesRootStyle } from "@/styles/cms-variables";
 import { CmsPreviewContextProvider } from "@/contexts/CmsPreviewContext";
-import { LayoutContextProvider } from "@/contexts/LayoutContextProvider";
 import { CmsLoaderProps } from "./init";
+import { Footer } from "@/components/organisms/Footer";
 
 const templateMap = {
   pages: PageTemplate,
   posts: PostTemplate,
   settings: undefined,
-  footer: undefined,
+  footer: Footer,
   redirectsRewrites: undefined,
   styling: undefined,
 } as const satisfies { [K in GeneratedN]: React.FC<EntryImport<K>> | undefined };
@@ -26,22 +24,14 @@ export const registerPreviewTemplates = (CMS: CMS, cmsLoaderProps: CmsLoaderProp
 
       return (
         <CmsPreviewContextProvider value={props}>
-          <LayoutContextProvider
-            value={{
-              ...cmsLoaderProps,
-              settings: settings as EntryImport<"settings">,
-              footer: footer as EntryImport<"footer">,
-            }}
-          >
-            <style>{getCmsVariablesRootStyle(entry)}</style>
-            {MappedTemplate ? (
-              <DefaultLayout>
-                <MappedTemplate {...entry} />
-              </DefaultLayout>
-            ) : (
-              <DefaultLayout {...entry} />
-            )}
-          </LayoutContextProvider>
+          <style>{getCmsVariablesRootStyle(entry)}</style>
+          {MappedTemplate ? (
+            <DefaultLayout navTree={cmsLoaderProps.navTree}>
+              <MappedTemplate {...entry} />
+            </DefaultLayout>
+          ) : (
+            <DefaultLayout {...entry} navTree={cmsLoaderProps.navTree} />
+          )}
         </CmsPreviewContextProvider>
       );
     });

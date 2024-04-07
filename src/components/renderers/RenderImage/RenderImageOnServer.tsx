@@ -1,8 +1,8 @@
 "use server";
 
 import Image, { ImageProps } from "next/image";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync } from "fs";
+import { join } from "path";
 import { getPlaiceholder } from "plaiceholder";
 import React from "react";
 

@@ -1,11 +1,8 @@
-"use client";
-
-import { useLayoutContext } from "@/contexts/LayoutContext";
 import Link from "next/link";
+import footerJson from "@cms-content/footer.json";
+import type { EntryImport } from "@/cms/api";
 
-export const Footer: React.FC = () => {
-  const { footer } = useLayoutContext();
-
+export const Footer: React.FC<EntryImport<"footer">> = (footer = footerJson) => {
   return (
     <footer className="p-container pi-containerInline">
       {footer.columns?.map((col, i) => {
