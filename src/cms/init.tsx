@@ -1,23 +1,22 @@
 "use client";
 
 import React, { lazy, useEffect, useState } from "react";
-
-import { cmsConfig } from "./config";
 import { registerPreviewStyles, registerPreviewTemplates } from "./preview";
 import { registerWidgets } from "./widgets";
-import { NavTree } from "./api";
 
-export type CmsLoaderProps = { navTree: NavTree };
+import type { DefaultLayoutProps } from "@/components/templates/DefaultLayout";
+
+export type CmsLoaderProps = DefaultLayoutProps;
 
 const cmsInit = async () => {
-  const { default: CMS } = await import("decap-cms-app");
+  const [{ default: CMS }, { cmsConfig }] = await Promise.all([import("decap-cms-app"), import("./config")]);
 
   CMS.init({ config: cmsConfig });
 
-  const CmsComponent: React.FC<CmsLoaderProps> = ({ navTree }) => {
+  const CmsComponent: React.FC<CmsLoaderProps> = (cmsLoaderProps) => {
     registerWidgets(CMS);
 
-    registerPreviewTemplates(CMS, { navTree });
+    registerPreviewTemplates(CMS, cmsLoaderProps);
 
     registerPreviewStyles(CMS);
 

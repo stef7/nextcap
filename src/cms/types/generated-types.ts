@@ -6,12 +6,18 @@ export interface pages_MODULES_richContent {
   markdown: string;
 }
 
+export interface pages_MODULES_postsList {
+  type: "postsList";
+  heading?: string;
+  maxItems: string;
+}
+
 export interface pages {
   title: string;
   thumbnail?: string;
   description?: string;
   hiddenInNav?: boolean;
-  MODULES: (pages_MODULES_richContent)[];
+  MODULES: (pages_MODULES_richContent | pages_MODULES_postsList)[];
   relatedPosts?: any[];
   uuid: any;
 }

@@ -6,7 +6,7 @@ export const RenderMarkdown: React.FC<{ markdown: string | undefined }> = ({ mar
   if (!markdown) return null;
 
   return (
-    <div data-testid="RenderMarkdown">
+    <div data-testid="RenderMarkdown" className="proseLite">
       <MarkdownToJsx
         options={{
           createElement(type, { key, ...props }, ...children) {

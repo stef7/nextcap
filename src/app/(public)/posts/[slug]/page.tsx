@@ -9,22 +9,22 @@ export const generateStaticParams = (() => {
 }) satisfies GenerateStaticParams;
 
 export const generateMetadata = (async ({ params }) => {
-  const entry = await getFolderEntry("posts", params.slug);
+  const { entry } = await getFolderEntry("posts", params.slug);
   return {
     title: entry.title,
   };
 }) satisfies InferGenerateMetadataFromGSP<typeof generateStaticParams>;
 
 export default async function PostPage({ params }: InferPagePropsFromGSP<typeof generateStaticParams>) {
-  const posts = await getFolderEntries("posts");
-  const post = posts.find((post) => post.slug.join(`/`) === params.slug)?.entry;
+  const postsPromise = getFolderEntries("posts");
+  const post = (await postsPromise).find((post) => post.slug.join(`/`) === params.slug);
   if (!post) return notFound();
 
   return (
     <>
       <PostTemplate {...post} />
 
-      <PostsList entries={posts} />
+      <PostsList postsPromise={postsPromise} />
     </>
   );
 }

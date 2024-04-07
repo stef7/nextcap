@@ -1,36 +1,43 @@
 import type { CMS } from "decap-cms-core";
-import type { GeneratedN, EntryImport } from "./api";
+import type { GeneratedN, EntryWithMeta, FolderN } from "./api";
+import { getCmsVariablesRootStyle } from "@/styles/cms-variables";
+import type { CmsLoaderProps } from "./init";
+
 import { PostTemplate } from "@/components/templates/PostTemplate";
 import { PageTemplate } from "@/components/templates/PageTemplate";
 import { DefaultLayout } from "@/components/templates/DefaultLayout";
-import { getCmsVariablesRootStyle } from "@/styles/cms-variables";
 import { CmsPreviewContextProvider } from "@/contexts/CmsPreviewContext";
-import { CmsLoaderProps } from "./init";
-import { Footer } from "@/components/organisms/Footer";
+import { defaultLocale, getLangDirection } from "@/utils/locale";
 
 const templateMap = {
   pages: PageTemplate,
   posts: PostTemplate,
   settings: undefined,
-  footer: Footer,
-  redirectsRewrites: undefined,
   styling: undefined,
-} as const satisfies { [K in GeneratedN]: React.FC<EntryImport<K>> | undefined };
+  footer: undefined,
+  redirectsRewrites: undefined,
+} as const satisfies { [K in GeneratedN]: K extends FolderN ? React.FC<EntryWithMeta<K>> : undefined };
 
 export const registerPreviewTemplates = (CMS: CMS, cmsLoaderProps: CmsLoaderProps) => {
   for (const [name, MappedTemplate] of Object.entries(templateMap)) {
     CMS.registerPreviewTemplate(name, (props) => {
       const entry = props.entry.get("data").toJS();
-
+      Object.assign(props.document.documentElement, {
+        lang: defaultLocale.language ?? "",
+        dir: getLangDirection(defaultLocale.language),
+      });
       return (
         <CmsPreviewContextProvider value={props}>
-          <style>{getCmsVariablesRootStyle(entry)}</style>
+          <style>
+            {`body > div, body > div > div.frame-content { display: contents }`}
+            {getCmsVariablesRootStyle(name === "styling" ? entry : undefined)}
+          </style>
           {MappedTemplate ? (
-            <DefaultLayout navTree={cmsLoaderProps.navTree}>
-              <MappedTemplate {...entry} />
+            <DefaultLayout {...cmsLoaderProps}>
+              <MappedTemplate entry={entry} {...entry} />
             </DefaultLayout>
           ) : (
-            <DefaultLayout {...entry} navTree={cmsLoaderProps.navTree} />
+            <DefaultLayout {...cmsLoaderProps} entry={entry} {...entry} />
           )}
         </CmsPreviewContextProvider>
       );
@@ -41,10 +48,11 @@ export const registerPreviewTemplates = (CMS: CMS, cmsLoaderProps: CmsLoaderProp
 let styleObserver: MutationObserver;
 
 export const registerPreviewStyles = (CMS: CMS) => {
+  CMS.getPreviewStyles().length = 0;
   for (const sheet of Array.from(document.styleSheets)) {
     if (!sheet.href?.includes("/_next/")) continue;
     sheet.disabled = true;
-    CMS.registerPreviewStyle(sheet.href);
+    if (!CMS.getPreviewStyles().some((s) => s.value === sheet.href)) CMS.registerPreviewStyle(sheet.href);
   }
 
   styleObserver ??= new MutationObserver(() => registerPreviewStyles(CMS));

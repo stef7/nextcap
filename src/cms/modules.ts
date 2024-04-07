@@ -15,6 +15,24 @@ const pageBuilderModules = [
     widget: "object",
     fields: [{ name: "markdown", label: "Markdown", widget: "markdown", minimal: true }],
   },
+  {
+    name: "postsList",
+    label: "PostsList",
+    widget: "object",
+    fields: [
+      {
+        name: "heading",
+        label: "Heading",
+        widget: "string",
+        required: false,
+      },
+      {
+        name: 'maxItems',
+        label: 'Maximum number of items to show',
+        widget: 'number',
+      },
+    ],
+  },
 ] as const satisfies ModulesFieldConfig["types"];
 
 export const pageBuilderModulesField = {

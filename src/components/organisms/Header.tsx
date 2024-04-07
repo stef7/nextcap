@@ -16,14 +16,14 @@ export const Header: React.FC<{ navigation: React.ReactElement; settings?: Entry
             src={settings.logo}
             alt={settings.title ?? "Logo"}
             title={settings.title}
-            height={160}
             priority
-            className="max-h-20"
+            className="max-h-20 max-w-32 h-auto w-auto"
           />
         ) : (
           <div>{settings.title}</div>
         )}
       </Link>
+
       {navigation}
     </header>
   );

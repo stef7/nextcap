@@ -1,18 +1,18 @@
-"use client";
-
-import type { EntryImport } from "@/cms/api";
+import type { EntryWithMeta } from "@/cms/api";
 import { RenderModules } from "../renderers/RenderModules/RenderModules";
+import { PostsList } from "../organisms/PostsList";
+import { ImagePlaceholderContextProvider } from "@/contexts/ImagePlaceholderContext";
 
-type PageTemplateProps = EntryImport<"pages"> & {
-  postsPageContent?: React.ReactNode;
+type PageTemplateProps = EntryWithMeta<"pages"> & {
+  postsPromise?: Promise<EntryWithMeta<"posts">[]>;
 };
 
-export const PageTemplate: React.FC<PageTemplateProps> = ({ MODULES, postsPageContent }) => {
+export const PageTemplate: React.FC<PageTemplateProps> = ({ entry, images, postsPromise }) => {
   return (
-    <>
-      <RenderModules modules={MODULES} />
+    <ImagePlaceholderContextProvider value={images}>
+      <RenderModules modules={entry.MODULES} />
 
-      {postsPageContent}
-    </>
+      {postsPromise && <PostsList postsPromise={postsPromise} />}
+    </ImagePlaceholderContextProvider>
   );
 };

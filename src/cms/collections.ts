@@ -70,7 +70,7 @@ export const cmsCollections = [
     preview_path: "/posts/{{slug}}",
     fields: [
       { name: "title", label: "Title", widget: "string" },
-      { name: "date", label: "Date", widget: "datetime" },
+      { name: "date", label: "Date (UTC)", widget: "datetime", picker_utc: true },
       { name: "lang", label: "Language", widget: "select", options: languageFieldOptions, required: false },
       { name: "timeZone", label: "Time Zone", widget: "select", options: timeZoneFieldOptions, required: false },
       { name: "thumbnail", label: "Featured Image", widget: "image", required: false },

@@ -10,6 +10,10 @@
     --containerWidth: 65rem;
     font-size: calc(75% + 1vmin);
   }
+  body {
+    @apply min-h-screen flex flex-col;
+    min-height: 100dvh;
+  }
 
   :is(main, footer) {
     a {
@@ -32,7 +36,9 @@
     border-radius: 0.3em;
   }
 
-  main {
+  .proseLite {
+    max-width: 67ch;
+
     :is(p, h1, h2, h3, h4, h5, h6, ul, ol) {
       line-height: 1.5;
       &:not(:first-child) {

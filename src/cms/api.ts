@@ -6,8 +6,12 @@ import { notFound } from "next/navigation";
 import { buildTree } from "@/utils/build-tree";
 import { validate as validateUuid } from "uuid";
 
+import { readFileSync } from "fs";
+import { join } from "path";
+import { getPlaiceholder } from "plaiceholder";
+
 export type GeneratedN = Extract<keyof GENERATED_LOOKUP, string>;
-type FolderN = GENERATED_COLLECTIONS["folders"][number];
+export type FolderN = GENERATED_COLLECTIONS["folders"][number];
 type NestedFolderN = GENERATED_COLLECTIONS["nested"][number];
 
 /**
@@ -19,8 +23,6 @@ export type DeepPartial<T> = T extends any[]
   : T extends object
     ? { [P in keyof T]?: DeepPartial<T[P]> }
     : T;
-
-export type EntryImport<N extends GeneratedN> = DeepPartial<GENERATED_LOOKUP[N]>;
 
 type CollectionConfig = (typeof cmsCollections)[number];
 type FolderConfig<C extends CollectionConfig = CollectionConfig> = Extract<C, { folder: unknown }>;
@@ -74,6 +76,8 @@ export const getFolderSlugs = <N extends FolderN>(name: N) => {
   return paths.map((path) => pathToSlug(path));
 };
 
+export type EntryImport<N extends GeneratedN> = DeepPartial<GENERATED_LOOKUP[N]>;
+
 const importEntry = async <N extends FolderN>(folderPath: FolderPath, entryPath: EntryPath) => {
   const path = `${folderPath}/${entryPath}` as const;
   /** May be required for webpack tree shaking: to include explicitly at start of import path below */
@@ -85,13 +89,13 @@ const importEntry = async <N extends FolderN>(folderPath: FolderPath, entryPath:
 };
 
 const pathsToFolderEntries = <N extends FolderN>(name: N, paths: EntryPath[]) => {
-  const { folder } = getFolderConfig(name);
-  return Promise.all(paths.map((path) => importEntry<N>(folder, path)));
+  const conf = getFolderConfig(name);
+  return Promise.all(paths.map((path) => getEntryWithMeta(conf, path)));
 };
 
 const getFolderEntryByPath = async <N extends FolderN>(name: N, path: EntryPath) => {
-  const { folder } = getFolderConfig(name);
-  return importEntry<N>(folder, path);
+  const conf = getFolderConfig(name);
+  return getEntryWithMeta(conf, path);
 };
 
 export const getFolderEntry = async <N extends FolderN, S extends SlugParam<N>>(name: N, slug: S) => {
@@ -99,16 +103,64 @@ export const getFolderEntry = async <N extends FolderN, S extends SlugParam<N>>(
   return getFolderEntryByPath(name, path).catch(notFound);
 };
 
-export const getFolderEntries = <N extends FolderN>(name: N) => {
-  const conf = getFolderConfig(name);
-  const promises = getFolderPaths(conf.name).map(async (path) => {
-    const entry = await importEntry<N>(conf.folder, path);
-    return { ...getEntryMeta(conf, path), entry };
-  });
-  return Promise.all(promises);
+export type EntryImageMeta = { width: number; height: number; base64: `data:image/${string}` };
+export type EntryImageMetas = Record<string, EntryImageMeta>;
+
+export type EntryWithMeta<N extends FolderN = FolderN> = {
+  entry: EntryImport<N>;
+  images: EntryImageMetas;
+} & EntryMeta<N>;
+
+const imageSourcesRegex =
+  /(?<=^|\]\s*\(|<img\b[^>]+\bsrc=")\/cms-uploads\/[^)]+\.(?:jpe?g|png|gif|webp|tiff?)(?=\s*$|\s*[)"])/giu;
+const findImageSourcesDeep = <O extends Record<string, any> | any[]>(object: O, urls: string[] = []) => {
+  const recurse = <T extends object>(target: T) => {
+    for (const value of Object.values(target)) {
+      if (typeof value === "string") urls.push(...(value.match(imageSourcesRegex) ?? []));
+      else if (typeof value === "object") recurse(value);
+    }
+  };
+  recurse(object);
+  return Object.freeze(Array.from(new Set(urls)));
+};
+const getEntryImages = async <N extends GeneratedN>(entry: EntryImport<N>) => {
+  const sources = findImageSourcesDeep(entry);
+  const results = await Promise.all(
+    sources.map(
+      async (src) =>
+        await getPlaiceholder(readFileSync(join("./public", src))).then(({ base64, metadata: { width, height } }) => ({
+          width,
+          height,
+          base64: base64 as `data:image/${string}`,
+        })),
+    ),
+  );
+  return Object.fromEntries(sources.map((src, index) => [src, results[index]] as const));
 };
 
-export type EntriesWithMeta = Awaited<ReturnType<typeof getFolderEntries>>;
+const getEntryMeta = <N extends FolderN>(folderConfig: FolderConfigWithName<N>, path: EntryPath) => {
+  const slug = pathToSlug(path);
+  return {
+    path,
+    folderPath: folderConfig.folder,
+    slug,
+    uri: slugToPreviewUri(slug, folderConfig.preview_path),
+  } as EntryMeta<N>;
+};
+
+const getEntryWithMeta = async <N extends FolderN>(
+  conf: FolderConfigWithName<N>,
+  path: EntryPath,
+): Promise<EntryWithMeta<N>> => {
+  const entry = await importEntry<N>(conf.folder, path);
+  return { ...getEntryMeta(conf, path), entry, images: await getEntryImages(entry) };
+};
+
+export const getFolderEntries = <N extends FolderN>(name: N) => {
+  const conf = getFolderConfig(name);
+  const promises = getFolderPaths(conf.name).map((path) => getEntryWithMeta(conf, path));
+  return Promise.all(promises);
+};
 
 export const getNavTree = async <N extends NestedFolderN>(name: N) => {
   const entries = await getFolderEntries<N>(name);
@@ -124,23 +176,20 @@ export type NavTree = Awaited<ReturnType<typeof getNavTree>>;
 
 const getFolderConfigs = (): FolderConfig[] => cmsCollections.flatMap((c) => ("folder" in c ? [c] : []));
 
-export const slugToPreviewUri = (slug: string[], previewPath: FolderConfig["preview_path"]) => {
-  return previewPath.replace(
-    /\{\{(?:dirname|slug)\}\}/,
-    slug.join("/"),
-  ) as typeof previewPath extends `${infer B}${"{{dirname}}" | "{{slug}}"}${infer A}`
-    ? `${B}${ReturnType<string[]["join"]>}${A}`
-    : typeof previewPath;
+type SlugToPreviewUri<
+  P extends FolderConfig["preview_path"],
+  With extends string = string,
+> = P extends `${infer B}${"{{dirname}}" | "{{slug}}"}${infer A}` ? `${B}${With}${A}` : P;
+
+export const slugToPreviewUri = <P extends FolderConfig["preview_path"]>(slug: string[], previewPath: P) => {
+  return previewPath.replace(/\{\{(?:dirname|slug)\}\}/, slug.join("/")) as SlugToPreviewUri<P>;
 };
 
-const getEntryMeta = <C extends FolderConfig>(folderConfig: C, path: EntryPath) => {
-  const slug = pathToSlug(path);
-  return {
-    path,
-    folderPath: folderConfig.folder,
-    slug,
-    uri: slugToPreviewUri(slug, folderConfig.preview_path),
-  };
+export type EntryMeta<N extends FolderN = FolderN> = {
+  path: `${string}.json`;
+  folderPath: FolderConfigWithName<N>["folder"];
+  slug: string[];
+  uri: SlugToPreviewUri<FolderConfigWithName<N>["preview_path"]>;
 };
 
 export const getAnyFolderEntryByUuid = async (uuid: string) => {
@@ -150,12 +199,12 @@ export const getAnyFolderEntryByUuid = async (uuid: string) => {
     getFolderConfigs().flatMap((conf) => {
       if (!conf.fields.find((field) => field.name === "uuid")) return [];
 
-      return getFolderPaths(conf.name).map(async (path) => {
+      return getFolderPaths(conf.name).map(async (path): Promise<EntryWithMeta> => {
         const entry = await importEntry<typeof conf.name>(conf.folder, path);
         if (entry.uuid !== uuid) {
           throw new Error(`${conf.folder}/${path} UUID '${entry.uuid}' does not match '${uuid}'`);
         }
-        return { ...getEntryMeta(conf, path), entry };
+        return { ...getEntryMeta(conf, path), entry, images: await getEntryImages(entry) };
       });
     }),
   ).catch((cause) => {

@@ -5,14 +5,15 @@ import { Footer } from "../organisms/Footer";
 import type { EntryImport, NavTree } from "@/cms/api";
 import { Navigation } from "../organisms/Navigation";
 
-type DefaultLayoutProps = React.PropsWithChildren<{
+export type DefaultLayoutProps = React.PropsWithChildren<{
   navTree: NavTree;
   settings?: EntryImport<"settings">;
+  footer?: EntryImport<"footer">;
 }>;
 
-export const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children, navTree, settings }) => {
+export const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children, navTree, settings, footer }) => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       <ul id="skip-links" className="sr-only focus-within:not-sr-only !fixed">
         <li>
           <a href="#main-content">Skip to main content</a>
@@ -25,7 +26,7 @@ export const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children, navTree,
         {children}
       </main>
 
-      <Footer />
-    </div>
+      <Footer footer={footer} />
+    </>
   );
 };

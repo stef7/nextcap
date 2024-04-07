@@ -2,7 +2,7 @@ import Link from "next/link";
 import footerJson from "@cms-content/footer.json";
 import type { EntryImport } from "@/cms/api";
 
-export const Footer: React.FC<EntryImport<"footer">> = (footer = footerJson) => {
+export const Footer: React.FC<{ footer?: EntryImport<"footer"> }> = ({ footer = footerJson }) => {
   return (
     <footer className="p-container pi-containerInline">
       {footer.columns?.map((col, i) => {
